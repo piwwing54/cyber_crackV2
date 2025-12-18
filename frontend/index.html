@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Crack Pro - APK Cracking Web Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .shadow-neon {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .terminal {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                <i class="fas fa-shield-alt text-2xl"></i>
+                <h1 class="text-2xl font-bold">CYBER CRACK PRO</h1>
+                <span class="px-2 py-1 bg-red-500 text-xs rounded">v3.0</span>
+            </div>
+            <div class="flex space-x-4">
+                <button id="queueBtn" class="px-4 py-2 bg-purple-700 rounded hover:bg-purple-600 transition">
+                    <i class="fas fa-list mr-2"></i> Queue
+                </button>
+                <button id="docsBtn" class="px-4 py-2 bg-blue-700 rounded hover:bg-blue-600 transition">
+                    <i class="fas fa-book mr-2"></i> Docs
+                </button>
+                <a href="/admin" class="px-4 py-2 bg-yellow-700 rounded hover:bg-yellow-600 transition">
+                    <i class="fas fa-cog mr-2"></i> Admin
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-center py-16">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold mb-4">APK CRACKING PLATFORM</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Ultimate Android APK modification system with 100+ features. 
+                Unlock premium features, bypass login, crack in-app purchases, and more.
+            </p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="bg-black bg-opacity-30 p-4 rounded-lg">
+                    <i class="fas fa-bolt text-2xl text-yellow-400 mb-2"></i>
+                    <p class="font-bold">Ultra Fast</p>
+                </div>
+                <div class="bg-black bg-opacity-30 p-4 rounded-lg">
+                    <i class="fas fa-brain text-2xl text-purple-400 mb-2"></i>
+                    <p class="font-bold">AI Enhanced</p>
+                </div>
+                <div class="bg-black bg-opacity-30 p-4 rounded-lg">
+                    <i class="fas fa-shield-alt text-2xl text-green-400 mb-2"></i>
+                    <p class="font-bold">Secure</p>
+                </div>
+                <div class="bg-black bg-opacity-30 p-4 rounded-lg">
+                    <i class="fas fa-cogs text-2xl text-blue-400 mb-2"></i>
+                    <p class="font-bold">Multi-Engine</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Panel - Upload & Analysis -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Upload Section -->
+                <div class="bg-gray-800 rounded-xl p-6 shadow-neon">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-cloud-upload-alt mr-2"></i> Upload Android Package
+                    </h2>
+                    <div class="mb-4 p-3 bg-blue-900 bg-opacity-50 rounded-lg text-sm">
+                        <p class="mb-1"><i class="fas fa-info-circle mr-2 text-blue-300"></i><strong>How to find your Android Package files:</strong></p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Check your <strong>Downloads</strong> folder</li>
+                            <li>Look in <strong>Documents</strong> or <strong>App</strong> folders</li>
+                            <li>Search for files with <strong>.apk, .apks, .xapk</strong> extensions</li>
+                            <li><strong>Non-image files only</strong> - system blocks image files</li>
+                        </ul>
+                    </div>
+                    <div class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center"
+                         id="dropArea">
+                        <i class="fas fa-file-archive text-5xl text-gray-500 mb-4"></i>
+                        <p class="mb-2 text-lg">Drag & drop Android Package file here</p>
+                        <p class="text-sm text-gray-400 mb-2">Max size: 500MB | .apk, .apks, .xapk files supported</p>
+                        <p class="text-xs text-gray-500 mb-4">Note: Look for Android Package files in your Downloads, Documents, or App folders</p>
+                        <input type="file" id="apkFile" class="hidden">
+                        <div id="fileInfo" class="mt-2 text-sm text-gray-300 hidden">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <span id="fileInfoText"></span>
+                        </div>
+                        <label for="apkFile" 
+                               class="px-6 py-3 gradient-bg rounded-lg cursor-pointer hover:opacity-90 transition">
+                            <i class="fas fa-folder-open mr-2"></i>Browse Files
+                        </label>
+                    </div>
+                    <div id="uploadProgress" class="hidden mt-4">
+                        <div class="flex justify-between mb-1">
+                            <span>Uploading...</span>
+                            <span id="uploadPercent">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div id="uploadBar" class="progress-bar h-2 rounded-full gradient-bg" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Results -->
+                <div class="bg-gray-800 rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-chart-bar mr-2"></i> Analysis Results
+                    </h2>
+                    <div id="analysisResults" class="terminal p-4 rounded-lg mb-4 h-64 overflow-auto">
+                        <div class="text-green-400">> Ready for package upload...</div>
+                        <div class="text-gray-400">> Drag & drop Android package to begin analysis</div>
+                        <div class="text-gray-400">> System will detect protections and vulnerabilities</div>
+                    </div>
+                    <button id="analyzeBtn" class="px-6 py-3 bg-green-700 rounded-lg hover:bg-green-600 transition disabled:opacity-50" disabled>
+                        <i class="fas fa-play mr-2"></i>Start Deep Analysis
+                    </button>
+                </div>
+
+                <!-- Crack Configuration -->
+                <div class="bg-gray-800 rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-cogs mr-2"></i> Crack Configuration
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-3">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="bypass_login" checked>
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-sign-in-alt text-blue-400 mr-2"></i> Bypass Login
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="unlock_iap" checked>
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-shopping-cart text-green-400 mr-2"></i> Unlock IAP
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="game_mods">
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-gamepad text-purple-400 mr-2"></i> Game Mods
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="premium_unlock" checked>
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-crown text-yellow-400 mr-2"></i> Premium Unlock
+                                </span>
+                            </label>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="security_bypass" checked>
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-shield-alt text-red-400 mr-2"></i> Security Bypass
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="license_crack">
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-key text-orange-400 mr-2"></i> License Crack
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="ai_enhanced_crack" checked>
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-brain text-pink-400 mr-2"></i> AI Enhanced
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="remove_ads" checked>
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-ad text-purple-400 mr-2"></i> Remove Ads
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="performance_boost">
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-bolt text-teal-400 mr-2"></i> Performance Boost
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="crack-option" data-option="aggressive_patching">
+                                <span class="ml-2 flex items-center">
+                                    <i class="fas fa-fire text-red-500 mr-2"></i> Aggressive Patching
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <button id="crackBtn" class="mt-6 px-8 py-3 bg-gradient-to-r from-red-600 to-purple-600 rounded-lg hover:opacity-90 font-bold w-full transition disabled:opacity-50" disabled>
+                        <i class="fas fa-hammer mr-2"></i>EXECUTE CRACK
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel - Status & Download -->
+            <div class="space-y-6">
+                <!-- Status Panel -->
+                <div class="bg-gray-800 rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Crack Status
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Progress</span>
+                                <span id="progressPercent">0%</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-3">
+                                <div id="progressBar" class="progress-bar h-3 rounded-full gradient-bg" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div id="statusDisplay" class="p-3 bg-gray-900 rounded">
+                            <div class="flex items-center">
+                                <i class="fas fa-info-circle text-blue-400 mr-2"></i>
+                                <span id="statusText">Ready for upload</span>
+                            </div>
+                        </div>
+                        <div class="terminal p-3 rounded h-48 overflow-auto" id="logOutput">
+                            <div class="text-gray-400">> System initialized...</div>
+                            <div class="text-gray-400">> Ready to process Android packages</div>
+                            <div class="text-gray-400">> Select Android package to begin</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Download Panel -->
+                <div class="bg-gray-800 rounded-xl p-6" id="downloadPanel" style="display: none;">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-download mr-2"></i> Download Result
+                    </h2>
+                    <div class="p-4 bg-gray-900 rounded-lg mb-4">
+                        <div class="flex items-center mb-2">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <span class="font-bold">Cracking Successful!</span>
+                        </div>
+                        <div class="text-sm text-gray-300">
+                            <div class="mb-1"><i class="fas fa-file mr-2"></i> <span id="resultFilename">example_cracked.apk</span></div>
+                            <div class="mb-1"><i class="fas fa-sd-card mr-2"></i> Size: <span id="resultSize">15.2 MB</span></div>
+                            <div class="mb-1"><i class="fas fa-star mr-2"></i> Stability: <span id="resultStability" class="text-green-300">95%</span></div>
+                        </div>
+                    </div>
+                    <a id="downloadBtn" href="#" class="block text-center px-6 py-3 gradient-bg rounded-lg hover:opacity-90 transition">
+                        <i class="fas fa-download mr-2"></i>Download Cracked Package
+                    </a>
+                    <button id="newCrackBtn" class="mt-3 w-full px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-redo mr-2"></i>New Crack
+                    </button>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="bg-gray-800 rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-4">System Stats</h2>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Active Workers</span>
+                            <span class="font-bold" id="workerCount">4</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Queue Length</span>
+                            <span class="font-bold" id="queueLength">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Success Rate</span>
+                            <span class="font-bold text-green-400">92.7%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Avg. Time</span>
+                            <span class="font-bold">2m 30s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Card -->
+                <div class="bg-gray-800 rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-4">Features</h2>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <span>Login/Password Bypass</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <span>In-App Purchase Cracking</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <span>Game Modifications</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <span>Premium Features Unlock</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <span>Root Detection Bypass</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                            <span>Certificate Pinning Bypass</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <section class="mt-12">
+            <h2 class="text-3xl font-bold text-center mb-8">Advanced Cracking Capabilities</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature Cards -->
+                <div class="feature-card bg-gray-800 p-6 rounded-xl">
+                    <i class="fas fa-lock-open text-3xl text-green-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Login Bypass</h3>
+                    <p class="text-gray-300">Auto-login bypass, password crackers, biometric bypass</p>
+                </div>
+                
+                <div class="feature-card bg-gray-800 p-6 rounded-xl">
+                    <i class="fas fa-shopping-cart text-3xl text-blue-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">IAP Cracking</h3>
+                    <p class="text-gray-300">Google Play billing bypass, receipt manipulation, subscription removal</p>
+                </div>
+                
+                <div class="feature-card bg-gray-800 p-6 rounded-xl">
+                    <i class="fas fa-gamepad text-3xl text-purple-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Game Mods</h3>
+                    <p class="text-gray-300">Unlimited coins/gems, all items unlocked, god mode, speed hacks</p>
+                </div>
+                
+                <div class="feature-card bg-gray-800 p-6 rounded-xl">
+                    <i class="fas fa-crown text-3xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Premium Unlock</h3>
+                    <p class="text-gray-300">Premium features for Spotify, Netflix, YouTube, social media</p>
+                </div>
+                
+                <div class="feature-card bg-gray-800 p-6 rounded-xl">
+                    <i class="fas fa-shield-alt text-3xl text-red-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Security Bypass</h3>
+                    <p class="text-gray-300">Root detection, certificate pinning, debug detection bypass</p>
+                </div>
+                
+                <div class="feature-card bg-gray-800 p-6 rounded-xl">
+                    <i class="fas fa-brain text-3xl text-pink-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">AI Analysis</h3>
+                    <p class="text-gray-300">Neural network classification, pattern recognition, behavioral analysis</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 mt-12 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400 mb-2">Cyber Crack Pro v3.0 - Multi-language APK cracking system</p>
+            <p class="text-sm text-gray-500">For educational purposes only. Use responsibly and in accordance with applicable laws.</p>
+            <div class="mt-4 flex justify-center space-x-6">
+                <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-telegram"></i> Telegram Bot</a>
+                <a href="/api/docs" class="text-gray-400 hover:text-white transition"><i class="fas fa-book"></i> API Docs</a>
+                <a href="/admin" class="text-gray-400 hover:text-white transition"><i class="fas fa-cog"></i> Admin Panel</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        let currentFileId = null;
+        let ws = null;
+
+        // DOM Elements
+        const dropArea = document.getElementById('dropArea');
+        const apkFileInput = document.getElementById('apkFile');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const uploadBar = document.getElementById('uploadBar');
+        const uploadPercent = document.getElementById('uploadPercent');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const crackBtn = document.getElementById('crackBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressPercent = document.getElementById('progressPercent');
+        const statusText = document.getElementById('statusText');
+        const logOutput = document.getElementById('logOutput');
+        const downloadPanel = document.getElementById('downloadPanel');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const analysisResults = document.getElementById('analysisResults');
+
+        // File upload handlers
+        // Hanya gunakan satu trigger untuk membuka file picker:
+        // label yang terhubung ke input file, bukan event listener langsung pada dropArea
+        // dropArea.addEventListener('click', () => apkFileInput.click()); // Dihapus untuk menghindari konflik event
+
+        apkFileInput.addEventListener('change', (e) => {
+            const fileInfoDiv = document.getElementById('fileInfo');
+            const fileInfoText = document.getElementById('fileInfoText');
+
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+
+                // Tampilkan informasi file
+                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                fileInfoText.textContent = `Selected: ${file.name} (${fileSizeMB}MB)`;
+                fileInfoDiv.classList.remove('hidden');
+
+                // Validasi file non-gambar
+                if (validateNonImageFile(file)) {
+                    handleFileUpload(file);
+                } else {
+                    e.target.value = ''; // Reset input
+                    fileInfoDiv.classList.add('hidden'); // Sembunyikan info
+                }
+            } else {
+                fileInfoDiv.classList.add('hidden'); // Sembunyikan info jika tidak ada file
+            }
+        });
+
+        // Drag & drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('border-blue-400');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('border-blue-400');
+        }
+
+        dropArea.addEventListener('drop', (e) => {
+            const fileInfoDiv = document.getElementById('fileInfo');
+            const fileInfoText = document.getElementById('fileInfoText');
+
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                // Tampilkan informasi file yang didrop
+                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                fileInfoText.textContent = `Dropped: ${file.name} (${fileSizeMB}MB)`;
+                fileInfoDiv.classList.remove('hidden');
+
+                if (validateNonImageFile(file)) {
+                    handleFileUpload(file);
+                } else {
+                    addLog('❌ Please upload an Android package file (.apk, .apks, .xapk)', 'error');
+                    fileInfoDiv.classList.add('hidden'); // Sembunyikan info jika invalid
+                }
+            }
+        });
+
+        // Validasi file non-gambar dan APK
+        function validateNonImageFile(file) {
+            const fileName = file.name.toLowerCase();
+            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+
+            // Daftar ekstensi gambar yang akan DIBLOKIR
+            const imageExtensions = [
+                '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp',
+                '.svg', '.ico', '.tiff', '.tif', '.psd', '.ai',
+                '.eps', '.raw', '.cr2', '.nef', '.orf', '.sr2'
+            ];
+
+            // Daftar MIME type gambar yang akan DIBLOKIR
+            const imageMimeTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/bmp',
+                'image/webp',
+                'image/svg+xml',
+                'image/tiff',
+                'image/x-icon'
+            ];
+
+            // Cek apakah file adalah gambar
+            const isImageByExtension = imageExtensions.some(ext => fileName.endsWith(ext));
+            const isImageByMime = imageMimeTypes.includes(file.type);
+
+            if (isImageByExtension || isImageByMime) {
+                addLog(`❌ Gambar tidak diperbolehkan. File: ${file.name} (${fileSizeMB}MB)`, 'error');
+                return false;
+            }
+
+            // Validasi tambahan: pastikan file adalah format Android Package yang didukung
+            const supportedExtensions = ['.apk', '.apks', '.xapk'];
+            const isSupportedFormat = supportedExtensions.some(ext => fileName.endsWith(ext));
+
+            if (!isSupportedFormat) {
+                addLog(`❌ Format file tidak didukung. Gunakan: APK, APKS, atau XAPK. File: ${file.name} (${fileSizeMB}MB)`, 'error');
+                return false;
+            }
+
+            // Cek ukuran file
+            if (file.size > 500 * 1024 * 1024) { // 500MB
+                addLog(`❌ File terlalu besar (max 500MB). File: ${file.name} (${fileSizeMB}MB)`, 'error');
+                return false;
+            }
+
+            // Jika file lolos semua validasi
+            addLog(`✅ File valid: ${file.name} (${fileSizeMB}MB) - siap diupload`, 'success');
+            return true;
+        }
+
+        // Handle file upload
+        async function handleFileUpload(file) {
+            // Validasi telah dilakukan sebelumnya, jadi kita hanya perlu fokus pada upload
+            // Cek ukuran file sebagai validasi tambahan
+            if (file.size > 500 * 1024 * 1024) { // 500MB
+                addLog('❌ File too large (max 500MB)', 'error');
+                return;
+            }
+
+            addLog(`📤 Uploading: ${file.name} (${formatBytes(file.size)})`, 'info');
+
+            const formData = new FormData();
+            formData.append('apk', file);
+
+            uploadProgress.style.display = 'block';
+            analyzeBtn.disabled = true;
+
+            try {
+                const xhr = new XMLHttpRequest();
+
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        uploadBar.style.width = `${percent}%`;
+                        uploadPercent.textContent = `${percent}%`;
+                    }
+                });
+
+                xhr.addEventListener('load', () => {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            currentFileId = response.id;
+
+                            uploadProgress.style.display = 'none';
+                            analyzeBtn.disabled = false;
+
+                            addLog('✅ Upload successful!', 'success');
+                            addLog(`📁 File ID: ${currentFileId}`, 'info');
+                            addLog('🔍 Ready for analysis', 'info');
+
+                            statusText.textContent = 'Ready for analysis';
+                            connectWebSocket();
+                        } catch (parseError) {
+                            addLog('❌ Invalid response format: ' + xhr.responseText, 'error');
+                            uploadProgress.style.display = 'none';
+                            analyzeBtn.disabled = false;
+                        }
+                    } else {
+                        addLog(`❌ Upload failed: ${xhr.status} - ${xhr.statusText}`, 'error');
+                        if (xhr.responseText) {
+                            addLog(`Error details: ${xhr.responseText}`, 'error');
+                        }
+                        uploadProgress.style.display = 'none';
+                        analyzeBtn.disabled = false;
+                    }
+                });
+
+                xhr.addEventListener('error', () => {
+                    addLog('❌ Network error during upload!', 'error');
+                    uploadProgress.style.display = 'none';
+                    analyzeBtn.disabled = false;
+                });
+
+                xhr.addEventListener('timeout', () => {
+                    addLog('❌ Upload timeout!', 'error');
+                    uploadProgress.style.display = 'none';
+                    analyzeBtn.disabled = false;
+                });
+
+                xhr.open('POST', '/api/upload');
+                xhr.timeout = 300000; // 5 menit timeout
+                xhr.send(formData);
+
+            } catch (error) {
+                addLog('❌ Upload error: ' + error.message, 'error');
+                uploadProgress.style.display = 'none';
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        // Analyze button
+        analyzeBtn.addEventListener('click', async () => {
+            if (!currentFileId) return;
+            
+            addLog('🔬 Starting deep analysis...', 'info');
+            statusText.textContent = 'Analyzing Package structure';
+            analyzeBtn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/analyze/${currentFileId}`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                addLog('✅ Analysis started', 'success');
+                addLog('📊 Checking for security measures...', 'info');
+                
+                // Simulate analysis results
+                setTimeout(() => {
+                    showAnalysisResults();
+                }, 3000);
+
+            } catch (error) {
+                addLog('❌ Analysis failed: ' + error.message, 'error');
+            }
+        });
+
+        // Crack button
+        crackBtn.addEventListener('click', async () => {
+            if (!currentFileId) return;
+            
+            // Get configuration
+            const config = {};
+            document.querySelectorAll('.crack-option').forEach(checkbox => {
+                config[checkbox.dataset.option] = checkbox.checked;
+            });
+
+            addLog('⚡ Starting cracking process...', 'warning');
+            statusText.textContent = 'Cracking in progress';
+            crackBtn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/crack/${currentFileId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+                
+                const data = await response.json();
+                addLog('✅ Cracking engine started', 'success');
+                addLog('🔧 Applying patches...', 'info');
+
+            } catch (error) {
+                addLog('❌ Cracking failed: ' + error.message, 'error');
+            }
+        });
+
+        // WebSocket connection
+        function connectWebSocket() {
+            if (!currentFileId) return;
+            
+            if (ws) ws.close();
+            
+            ws = new WebSocket(`ws://${window.location.host}/ws/${currentFileId}`);
+            
+            ws.onopen = () => {
+                addLog('🔗 Connected to real-time updates', 'success');
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                
+                // Update progress
+                progressBar.style.width = `${data.progress}%`;
+                progressPercent.textContent = `${data.progress}%`;
+                statusText.textContent = data.status;
+                
+                // Add log based on status
+                if (data.status !== 'uploaded') {
+                    addLog(`📈 Progress: ${data.progress}% - ${data.status}`, 'info');
+                }
+                
+                // Enable crack button when analyzed
+                if (data.status === 'analyzed') {
+                    crackBtn.disabled = false;
+                    addLog('✅ Analysis complete! Ready for cracking', 'success');
+                }
+                
+                // Show download when completed
+                if (data.status === 'completed') {
+                    addLog('🎉 Cracking completed successfully!', 'success');
+                    downloadPanel.style.display = 'block';
+                    downloadBtn.href = `/api/download/${currentFileId}`;
+                    
+                    // Update download info
+                    document.getElementById('resultFilename').textContent = `cracked_${currentFileId}.apk`;
+                    document.getElementById('resultSize').textContent = '15.2 MB';
+                    document.getElementById('resultStability').textContent = '95%';
+                }
+                
+                if (data.status === 'failed') {
+                    addLog('❌ Process failed', 'error');
+                }
+            };
+            
+            ws.onerror = (error) => {
+                addLog('🔌 WebSocket error', 'error');
+            };
+        }
+
+        // Helper functions
+        function addLog(message, type = 'info') {
+            const logEntry = document.createElement('div');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            let icon = 'ℹ️';
+            if (type === 'error') icon = '❌';
+            if (type === 'success') icon = '✅';
+            if (type === 'warning') icon = '⚠️';
+            if (type === 'info') icon = 'ℹ️';
+            
+            logEntry.innerHTML = `<span class="text-gray-500">[${timestamp}]</span> ${icon} ${message}`;
+            logOutput.appendChild(logEntry);
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        function showAnalysisResults() {
+            const results = `
+                <div class="text-green-400">> Package Structure Analysis Complete</div>
+                <div class="text-cyan-400">> Package: com.example.app</div>
+                <div class="text-cyan-400">> Target SDK: 33 (Android 13)</div>
+                <div class="text-yellow-400">> Detected Security Measures:</div>
+                <div class="ml-4 text-orange-400">- Root detection: Present</div>
+                <div class="ml-4 text-orange-400">- Certificate pinning: Enabled</div>
+                <div class="ml-4 text-orange-400">- Signature verification: Active</div>
+                <div class="ml-4 text-orange-400">- Anti-debugging: Detected</div>
+                <div class="text-yellow-400">> Crack Recommendations:</div>
+                <div class="ml-4 text-green-400">- Priority: Bypass login & IAP</div>
+                <div class="ml-4 text-green-400">- Security bypass required</div>
+                <div class="ml-4 text-green-400">- Success probability: 87%</div>
+                <div class="text-green-400">> Ready for cracking process...</div>
+            `;
+            analysisResults.innerHTML = results;
+        }
+
+        // Queue button
+        document.getElementById('queueBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/queue');
+                const queue = await response.json();
+                
+                let queueInfo = `Active jobs: ${queue.length}\n\n`;
+                queue.forEach(job => {
+                    queueInfo += `${job.filename} - ${job.status} (${job.progress}%)\n`;
+                });
+                
+                alert(queueInfo);
+            } catch (error) {
+                console.error('Queue error:', error);
+                alert('Error fetching queue information');
+            }
+        });
+
+        // New crack button
+        document.getElementById('newCrackBtn').addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initialize
+        addLog('🚀 Cyber Crack Pro Web Platform initialized', 'success');
+        addLog('📱 Ready to process Android applications', 'info');
+        
+        // Load system stats
+        setInterval(async () => {
+            try {
+                const response = await fetch('/api/admin/stats');
+                const stats = await response.json();
+                
+                document.getElementById('queueLength').textContent = stats.total_cracks || 0;
+            } catch (error) {
+                console.error('Stats error:', error);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

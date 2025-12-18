@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Detail - Cyber Crack Pro v3.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <a href="/" class="btn btn-secondary mb-3"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Process Detail: <span id="process-id">PROCESS_ID</span></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Analysis Information</h5>
+                                <div class="card">
+                                    <div class="card-body" id="analysis-data">
+                                        <pre>Loading analysis data...</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Injection Information</h5>
+                                <div class="card">
+                                    <div class="card-body" id="injection-data">
+                                        <pre>Loading injection data...</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5>Security Analysis</h5>
+                            <div class="row" id="security-info">
+                                <!-- Security info will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h5>Premium Features Found</h5>
+                            <div class="row" id="premium-info">
+                                <!-- Premium features will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get process ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const processId = window.location.pathname.split('/')[2];
+        
+        if (processId) {
+            document.getElementById('process-id').textContent = processId;
+            loadProcessDetails(processId);
+        }
+        
+        async function loadProcessDetails(processId) {
+            try {
+                const response = await fetch(`/api/processes`);
+                const processes = await response.json();
+                
+                const process = processes.find(p => p.id === processId);
+                
+                if (process) {
+                    // Update analysis data
+                    if (process.analysis_result) {
+                        document.getElementById('analysis-data').innerHTML = `<pre>${JSON.stringify(process.analysis_result, null, 2)}</pre>`;
+                        
+                        // Update security information
+                        updateSecurityInfo(process.analysis_result);
+                        updatePremiumInfo(process.analysis_result);
+                    } else {
+                        document.getElementById('analysis-data').innerHTML = '<p>No analysis data available.</p>';
+                    }
+                    
+                    // Update injection data
+                    if (process.injection_result) {
+                        document.getElementById('injection-data').innerHTML = `<pre>${JSON.stringify(process.injection_result, null, 2)}</pre>`;
+                    } else {
+                        document.getElementById('injection-data').innerHTML = '<p>No injection data available.</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading process details:', error);
+            }
+        }
+        
+        function updateSecurityInfo(analysis) {
+            const securityInfoDiv = document.getElementById('security-info');
+            if (analysis && analysis.security_mechanisms) {
+                const securityCount = analysis.security_mechanisms.length;
+                securityInfoDiv.innerHTML = `
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">Security Mechanisms Detected</h6>
+                                <p class="card-text">${securityCount}</p>
+                                <small class="text-muted">Including root detection, certificate pinning, etc.</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function updatePremiumInfo(analysis) {
+            const premiumInfoDiv = document.getElementById('premium-info');
+            if (analysis && analysis.premium_features) {
+                const premiumCount = analysis.premium_features.length;
+                premiumInfoDiv.innerHTML = `
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">Premium Features Found</h6>
+                                <p class="card-text">${premiumCount}</p>
+                                <small class="text-muted">Features locked in basic version</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

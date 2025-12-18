@@ -1,0 +1,29 @@
+FROM python:3.11-slim
+
+# Install system dependencies - minimal required packages
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    unzip \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Create directories
+RUN mkdir -p uploads results logs temp && chmod 777 uploads results logs temp
+
+# Expose port (though bot uses polling)
+EXPOSE 3001
+
+# Command to run the Telegram bot
+CMD ["python", "telegram_bot.py"]

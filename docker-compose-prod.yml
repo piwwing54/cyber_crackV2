@@ -1,0 +1,174 @@
+# 🚀 CYBER CRACK PRO - Docker Compose Configuration
+# Full system with Telegram bot integration
+
+version: '3.8'
+
+services:
+  # Redis caching and queue service
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - cyber_crack_net
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cybercrack
+      POSTGRES_USER: cracker
+      POSTGRES_PASSWORD: securepassword123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cyber_crack_net
+
+  # Go-based fast analyzer
+  go-analyzer:
+    image: cyber-crack-pro/go-analyzer:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=info
+      - MAX_WORKERS=10
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  # Rust-based binary manipulator
+  rust-cracker:
+    image: cyber-crack-pro/rust-cracker:latest
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MAX_WORKERS=8
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  # C++ GPU-accelerated breaker
+  cpp-breaker:
+    image: cyber-crack-pro/cpp-breaker:latest
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - ENABLE_GPU_ACCELERATION=false
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  # Java-based Android-specific analyzer
+  java-dex:
+    image: cyber-crack-pro/java-dex:latest
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - JAVA_OPTS=-Xmx2g -Xms1g
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  # Python-based AI and pattern matcher
+  python-bridge:
+    image: cyber-crack-pro/python-bridge:latest
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PYTHONPATH=/app
+      - AI_ENHANCED=true
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  # Main orchestrator
+  orchestrator:
+    image: cyber-crack-pro/orchestrator:latest
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - POSTGRES_URL=postgresql://cracker:securepassword123@postgres:5432/cybercrack
+      - GO_ANALYZER_URL=http://go-analyzer:8080
+      - RUST_CRACKER_URL=http://rust-cracker:8081
+      - CPP_BREAKER_URL=http://cpp-breaker:8082
+      - JAVA_DEX_URL=http://java-dex:8083
+      - PYTHON_BRIDGE_URL=http://python-bridge:8084
+      - MAX_CONCURRENT_JOBS=20
+    depends_on:
+      - redis
+      - postgres
+      - go-analyzer
+      - rust-cracker
+      - cpp-breaker
+      - java-dex
+      - python-bridge
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+
+  # Telegram Bot - INI YANG AKAN TERHUBUNG DENGAN BOT ANDA
+  telegram-bot:
+    image: cyber-crack-pro/telegram-bot:latest
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - TELEGRAM_BOT_TOKEN=8548539065:AAHLcyMQKHimwo1cLTuUKZl8OR1xngL_GeI
+      - ORCHESTRATOR_URL=http://orchestrator:5000
+      - REDIS_URL=redis://redis:6379
+      - MAX_UPLOAD_SIZE=500
+      - WORK_DIR=/app
+    depends_on:
+      - orchestrator
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+    stdin_open: true
+    tty: true
+
+networks:
+  cyber_crack_net:
+    driver: bridge
+
+volumes:
+  redis_data:
+  postgres_data:

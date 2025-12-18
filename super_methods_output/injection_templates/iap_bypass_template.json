@@ -1,0 +1,16 @@
+{
+  "pattern": [
+    "verifyPurchase",
+    "isPurchased",
+    "validateReceipt",
+    "checkBilling"
+  ],
+  "injection_code": "const/4 v0, 0x1\nreturn v0",
+  "target_files": [
+    "Billing.smali",
+    "Purchase.smali",
+    "IAP.smali",
+    "Transaction.smali"
+  ],
+  "priority": 98
+}

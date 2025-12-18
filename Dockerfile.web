@@ -1,0 +1,31 @@
+FROM python:3.11-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements
+COPY frontend/requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Install FastAPI and web-specific packages
+RUN pip install fastapi uvicorn aiofiles python-multipart
+
+# Copy application code
+COPY frontend/ ./
+
+# Create uploads directory
+RUN mkdir -p uploads static
+
+# Expose port
+EXPOSE 8000
+
+# Run the web dashboard
+CMD ["uvicorn", "web_dashboard:app", "--host", "0.0.0.0", "--port", "8000"]

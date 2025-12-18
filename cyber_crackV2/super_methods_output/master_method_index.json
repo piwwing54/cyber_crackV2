@@ -1,0 +1,79 @@
+{
+  "total_methods": 100000,
+  "generation_timestamp": "2025-12-17T20:11:54.188734",
+  "categories": {
+    "LOGIN_BYPASS": 15000,
+    "PREMIUM_UNLOCK": 15000,
+    "GAME_MODIFICATION": 20000,
+    "IAP_BYPASS": 15000,
+    "SECURITY_BYPASS": 10000,
+    "LICENSE_CRACK": 8000,
+    "AD_REMOVAL": 7000,
+    "NETWORK_BYPASS": 7000,
+    "AI_ENHANCED": 3000
+  },
+  "method_types": {
+    "boolean_methods": 87335,
+    "integer_methods": 448,
+    "string_methods": 393,
+    "void_methods": 9323,
+    "long_methods": 397,
+    "object_methods": 419
+  },
+  "statistics": {
+    "total_categories": 9,
+    "average_confidence": 0.845,
+    "high_priority_methods": 16163,
+    "high_confidence_methods": 29319,
+    "security_related_methods": 10000
+  },
+  "top_categories_by_count": [
+    [
+      "GAME_MODIFICATION",
+      20000
+    ],
+    [
+      "LOGIN_BYPASS",
+      15000
+    ],
+    [
+      "PREMIUM_UNLOCK",
+      15000
+    ],
+    [
+      "IAP_BYPASS",
+      15000
+    ],
+    [
+      "SECURITY_BYPASS",
+      10000
+    ]
+  ],
+  "file_locations": {
+    "login_bypass_methods.json": 15000,
+    "premium_unlock_methods.json": 15000,
+    "game_modification_methods.json": 20000,
+    "iap_bypass_methods.json": 15000,
+    "security_bypass_methods.json": 10000,
+    "license_crack_methods.json": 8000,
+    "ad_removal_methods.json": 7000,
+    "network_bypass_methods.json": 7000,
+    "ai_enhanced_methods.json": 3000
+  },
+  "version": "3.0",
+  "features": [
+    "Login/Password Bypass Injection",
+    "In-App Purchase Cracking",
+    "Game Modification Injection",
+    "Premium Feature Unlocking",
+    "Security Check Bypass",
+    "Root Detection Bypass",
+    "Certificate Pinning Bypass",
+    "License Cracking",
+    "Ad Removal Injection",
+    "Network Security Bypass",
+    "AI-Enhanced Detection & Bypass"
+  ],
+  "integration_ready": true,
+  "ready_for_apk_injection": true
+}

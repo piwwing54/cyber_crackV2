@@ -1,0 +1,36 @@
+#!/bin/bash
+# APKTool Script for Linux
+# Generated for Cyber Crack Pro v3.0
+
+# Find java command
+if command -v java >/dev/null 2>&1; then
+    JAVA_CMD=$(command -v java)
+elif [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/java" ]; then
+    JAVA_CMD="$JAVA_HOME/bin/java"
+else
+    echo "Error: Java is required but not found in PATH or JAVA_HOME"
+    exit 1
+fi
+
+# Get the directory of this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Locate the APKTool JAR file
+JAR_FILE="$SCRIPT_DIR/apktool.jar"
+if [ ! -f "$JAR_FILE" ]; then
+    # Try to find any apktool jar file in the directory
+    for jar_file in "$SCRIPT_DIR"/apktool_*.jar; do
+        if [ -f "$jar_file" ]; then
+            JAR_FILE="$jar_file"
+            break
+        fi
+    done
+fi
+
+if [ ! -f "$JAR_FILE" ]; then
+    echo "Error: APKTool JAR file not found in $SCRIPT_DIR"
+    exit 1
+fi
+
+# Execute APKTool with all arguments
+exec "$JAVA_CMD" -jar "$JAR_FILE" "$@"

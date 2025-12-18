@@ -1,0 +1,9 @@
+# Requirements for Cyber Crack Pro Bot with Full Features
+# Using aiogram v2.x for better compatibility
+
+aiogram>=2.25.1,<3.0.0
+python-dotenv
+redis
+aiohttp
+asyncio
+requests

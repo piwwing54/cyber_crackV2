@@ -1,0 +1,234 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cyber-crack-pro-ingress
+  namespace: cyber-crack-pro
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rate-limit-connections: "10"
+    nginx.ingress.kubernetes.io/rate-limit-requests-per-second: "10"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - cyber-crack-pro.example.com
+    secretName: cyber-crack-pro-tls
+  rules:
+  - host: cyber-crack-pro.example.com
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: cyber-crack-orchestrator-service
+            port:
+              number: 5000
+      - path: /analyze
+        pathType: Prefix
+        backend:
+          service:
+            name: cyber-crack-orchestrator-service
+            port:
+              number: 5000
+      - path: /process
+        pathType: Prefix
+        backend:
+          service:
+            name: cyber-crack-orchestrator-service
+            port:
+              number: 5000
+      - path: /jobs
+        pathType: Prefix
+        backend:
+          service:
+            name: cyber-crack-orchestrator-service
+            port:
+              number: 5000
+      - path: /dashboard
+        pathType: Prefix
+        backend:
+          service:
+            name: cyber-crack-web-dashboard-service
+            port:
+              number: 8000
+      - path: /health
+        pathType: Exact
+        backend:
+          service:
+            name: cyber-crack-orchestrator-service
+            port:
+              number: 5000
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cyber-crack-web-dashboard-service
+            port:
+              number: 8000
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cyber-crack-pro-network-policy
+  namespace: cyber-crack-pro
+spec:
+  podSelector:
+    matchLabels:
+      app: cyber-crack-pro
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+  - from:
+    - podSelector:
+        matchLabels:
+          app: orchestrator
+    ports:
+    - protocol: TCP
+      port: 5000
+  - from:
+    - podSelector:
+        matchLabels:
+          app: go-analyzer
+    ports:
+    - protocol: TCP
+      port: 8080
+  - from:
+    - podSelector:
+        matchLabels:
+          app: rust-cracker
+    ports:
+    - protocol: TCP
+      port: 8081
+  - from:
+    - podSelector:
+        matchLabels:
+          app: cpp-breaker
+    ports:
+    - protocol: TCP
+      port: 8082
+  - from:
+    - podSelector:
+        matchLabels:
+          app: java-dex
+    ports:
+    - protocol: TCP
+      port: 8083
+  - from:
+    - podSelector:
+        matchLabels:
+          app: python-bridge
+    ports:
+    - protocol: TCP
+      port: 8084
+
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis
+    ports:
+    - protocol: TCP
+      port: 6379
+  - to:
+    - podSelector:
+        matchLabels:
+          app: postgres
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: TCP
+      port: 53  # DNS
+  - to: []  # Allow all external connections (for AI APIs)
+
+---
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: orchestrator-pdb
+  namespace: cyber-crack-pro
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: orchestrator
+
+---
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: go-analyzer-pdb
+  namespace: cyber-crack-pro
+spec:
+  minAvailable: 3
+  selector:
+    matchLabels:
+      app: go-analyzer
+
+---
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: rust-cracker-pdb
+  namespace: cyber-crack-pro
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: rust-cracker
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cyber-crack-pro-cert
+  namespace: cyber-crack-pro
+spec:
+  secretName: cyber-crack-pro-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - cyber-crack-pro.example.com
+  - api.cyber-crack-pro.example.com
+  - dashboard.cyber-crack-pro.example.com
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cyber-crack-pro-monitor
+  namespace: cyber-crack-pro
+  labels:
+    app: cyber-crack-pro
+spec:
+  selector:
+    matchLabels:
+      app: cyber-crack-pro
+  endpoints:
+  - port: metrics
+    interval: 15s
+    path: /metrics

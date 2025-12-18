@@ -1,0 +1,60 @@
+FROM python:3.11-slim
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    build-essential \
+    curl \
+    wget \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy requirements first for caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Run the Telegram bot
+CMD ["python", "-c", "
+import asyncio
+import os
+from aiogram import Bot, Dispatcher
+from aiogram.types import Message
+from aiogram.filters import Command
+
+# Use your bot token from environment
+TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '8548539065:AAHLcyMQKHimwo1cLTuUKZl8OR1xngL_GeI')
+if not TOKEN or 'YOUR_BOT_TOKEN' in TOKEN:
+    print('❌ ERROR: No TELEGRAM_BOT_TOKEN provided!')
+    exit(1)
+
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
+
+@dp.message(Command('start'))
+async def cmd_start(message: Message):
+    await message.answer('🤖 Cyber Crack Pro v3.0\\nReady to analyze and modify YOUR applications!')
+
+@dp.message(Command('help'))
+async def cmd_help(message: Message):
+    await message.answer('ℹ️ Cyber Crack Pro v3.0\\nCommands:\\n/start - Start the bot\\n/help - Show help\\n/crack - Analyze APK')
+
+@dp.message(Command('crack'))
+async def cmd_crack(message: Message):
+    await message.answer('🔧 Ready to analyze APK. Please upload your own application file.')
+
+async def main():
+    print('🚀 Cyber Crack Pro Telegram Bot Starting...')
+    print(f'✅ Connected to bot: @{(await bot.get_me()).username}')
+    await dp.start_polling(bot)
+
+if __name__ == '__main__':
+    asyncio.run(main())
+"]

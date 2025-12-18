@@ -1,0 +1,477 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-crack-orchestrator
+  namespace: cyber-crack-pro
+  labels:
+    app: orchestrator
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: orchestrator
+  template:
+    metadata:
+      labels:
+        app: orchestrator
+        tier: backend
+    spec:
+      containers:
+      - name: orchestrator
+        image: cyber-crack-pro/orchestrator:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+          name: http
+        env:
+        - name: REDIS_URL
+          value: "redis://cyber-crack-redis:6379"
+        - name: POSTGRES_URL
+          value: "postgresql://cracker:$(POSTGRES_PASSWORD)@cyber-crack-postgres:5432/cybercrackpro"
+        - name: DEEPSEEK_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-api-keys
+              key: deepseek-api-key
+        - name: WORMGPT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-api-keys
+              key: wormgpt-api-key
+        - name: MAX_WORKERS
+          value: "20"
+        - name: ENABLE_AI_ANALYSIS
+          value: "true"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "2000m"
+          limits:
+            memory: "4Gi"
+            cpu: "4000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: uploads
+          mountPath: /app/uploads
+        - name: results
+          mountPath: /app/results
+        - name: patterns
+          mountPath: /app/patterns
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads-pvc
+      - name: results
+        persistentVolumeClaim:
+          claimName: results-pvc
+      - name: patterns
+        configMap:
+          name: crack-patterns
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-crack-go-analyzer
+  namespace: cyber-crack-pro
+  labels:
+    app: go-analyzer
+    tier: engine
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: go-analyzer
+  template:
+    metadata:
+      labels:
+        app: go-analyzer
+        tier: engine
+    spec:
+      containers:
+      - name: go-analyzer
+        image: cyber-crack-pro/go-analyzer:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: REDIS_URL
+          value: "redis://cyber-crack-redis:6379"
+        - name: GIN_MODE
+          value: "release"
+        - name: GOMAXPROCS
+          value: "4"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1000m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        volumeMounts:
+        - name: uploads
+          mountPath: /uploads
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-crack-rust-cracker
+  namespace: cyber-crack-pro
+  labels:
+    app: rust-cracker
+    tier: engine
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rust-cracker
+  template:
+    metadata:
+      labels:
+        app: rust-cracker
+        tier: engine
+    spec:
+      containers:
+      - name: rust-cracker
+        image: cyber-crack-pro/rust-cracker:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+          name: http
+        env:
+        - name: REDIS_URL
+          value: "redis://cyber-crack-redis:6379"
+        - name: RUST_LOG
+          value: "info"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        volumeMounts:
+        - name: uploads
+          mountPath: /uploads
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-crack-cpp-breaker
+  namespace: cyber-crack-pro
+  labels:
+    app: cpp-breaker
+    tier: engine
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cpp-breaker
+  template:
+    metadata:
+      labels:
+        app: cpp-breaker
+        tier: engine
+    spec:
+      containers:
+      - name: cpp-breaker
+        image: cyber-crack-pro/cpp-breaker:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8082
+          name: http
+        env:
+        - name: REDIS_URL
+          value: "redis://cyber-crack-redis:6379"
+        - name: CUDA_VISIBLE_DEVICES
+          value: "0"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "2000m"
+            nvidia.com/gpu: 1
+          limits:
+            memory: "4Gi"
+            cpu: "4000m"
+            nvidia.com/gpu: 1
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8082
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        volumeMounts:
+        - name: uploads
+          mountPath: /uploads
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-crack-java-dex
+  namespace: cyber-crack-pro
+  labels:
+    app: java-dex
+    tier: engine
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: java-dex
+  template:
+    metadata:
+      labels:
+        app: java-dex
+        tier: engine
+    spec:
+      containers:
+      - name: java-dex
+        image: cyber-crack-pro/java-dex:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8083
+          name: http
+        env:
+        - name: REDIS_URL
+          value: "redis://cyber-crack-redis:6379"
+        - name: JAVA_OPTS
+          value: "-Xmx4g -Xms2g"
+        resources:
+          requests:
+            memory: "3Gi"
+            cpu: "1500m"
+          limits:
+            memory: "6Gi"
+            cpu: "3000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8083
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        volumeMounts:
+        - name: uploads
+          mountPath: /uploads
+        - name: tools
+          mountPath: /tools
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads-pvc
+      - name: tools
+        persistentVolumeClaim:
+          claimName: tools-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-crack-python-bridge
+  namespace: cyber-crack-pro
+  labels:
+    app: python-bridge
+    tier: engine
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: python-bridge
+  template:
+    metadata:
+      labels:
+        app: python-bridge
+        tier: engine
+    spec:
+      containers:
+      - name: python-bridge
+        image: cyber-crack-pro/python-bridge:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8084
+          name: http
+        env:
+        - name: REDIS_URL
+          value: "redis://cyber-crack-redis:6379"
+        - name: DEEPSEEK_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-api-keys
+              key: deepseek-api-key
+        - name: WORMGPT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-api-keys
+              key: wormgpt-api-key
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1000m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8084
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        volumeMounts:
+        - name: uploads
+          mountPath: /uploads
+        - name: models
+          mountPath: /app/models
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads-pvc
+      - name: models
+        persistentVolumeClaim:
+          claimName: models-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-crack-telegram-bot
+  namespace: cyber-crack-pro
+  labels:
+    app: telegram-bot
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: telegram-bot
+  template:
+    metadata:
+      labels:
+        app: telegram-bot
+        tier: frontend
+    spec:
+      containers:
+      - name: telegram-bot
+        image: cyber-crack-pro/telegram-bot:latest
+        imagePullPolicy: Always
+        env:
+        - name: TELEGRAM_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: bot-tokens
+              key: bot-token
+        - name: ORCHESTRATOR_URL
+          value: "http://cyber-crack-orchestrator:5000"
+        - name: REDIS_URL
+          value: "redis://cyber-crack-redis:6379"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: uploads
+          mountPath: /app/uploads
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-crack-web-dashboard
+  namespace: cyber-crack-pro
+  labels:
+    app: web-dashboard
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-dashboard
+  template:
+    metadata:
+      labels:
+        app: web-dashboard
+        tier: frontend
+    spec:
+      containers:
+      - name: web-dashboard
+        image: cyber-crack-pro/web-dashboard:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: ORCHESTRATOR_URL
+          value: "http://cyber-crack-orchestrator:5000"
+        - name: REDIS_URL
+          value: "redis://cyber-crack-redis:6379"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1000m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        volumeMounts:
+        - name: uploads
+          mountPath: /app/uploads
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads-pvc

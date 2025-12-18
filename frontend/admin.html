@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Crack Pro - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .status-success { background-color: #10b981; }
+        .status-processing { background-color: #f59e0b; }
+        .status-failed { background-color: #ef4444; }
+        .status-pending { background-color: #9ca3af; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-cog text-2xl"></i>
+                <h1 class="text-2xl font-bold">ADMIN DASHBOARD</h1>
+                <span class="px-2 py-1 bg-red-500 text-xs rounded">CYBER CRACK PRO</span>
+            </div>
+            <div class="space-x-4">
+                <button id="refreshBtn" class="px-4 py-2 bg-blue-700 rounded hover:bg-blue-600 transition">
+                    <i class="fas fa-sync mr-2"></i>Refresh
+                </button>
+                <a href="/" class="px-4 py-2 bg-purple-700 rounded hover:bg-purple-600 transition">
+                    <i class="fas fa-home mr-2"></i>Main App
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <!-- Stats Cards -->
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-lg text-gray-400 mb-2">Total Requests</h3>
+                <p class="text-3xl font-bold" id="totalRequests">0</p>
+                <div class="mt-2">
+                    <span class="text-green-400"><i class="fas fa-arrow-up"></i> +5%</span>
+                    <span class="text-gray-400 text-sm ml-2">from yesterday</span>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-lg text-gray-400 mb-2">Success Rate</h3>
+                <p class="text-3xl font-bold text-green-400" id="successRate">0%</p>
+                <div class="mt-2">
+                    <span class="text-green-400"><i class="fas fa-arrow-up"></i> +2%</span>
+                    <span class="text-gray-400 text-sm ml-2">improvement</span>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-lg text-gray-400 mb-2">Active Workers</h3>
+                <p class="text-3xl font-bold text-blue-400" id="activeWorkers">0</p>
+                <div class="mt-2">
+                    <span class="text-green-400"><i class="fas fa-check"></i> All Active</span>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-lg text-gray-400 mb-2">Queue Length</h3>
+                <p class="text-3xl font-bold" id="queueLength">0</p>
+                <div class="mt-2">
+                    <span class="text-gray-400">Processing...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Processing Time Chart -->
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-4">Processing Time Distribution</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+            
+            <!-- Success Rate Chart -->
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-4">Success Rate by Category</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-gray-800 rounded-xl p-6 mb-6">
+            <h3 class="text-xl font-bold mb-4">Recent Activity</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="text-left py-2">ID</th>
+                            <th class="text-left py-2">Filename</th>
+                            <th class="text-left py-2">Type</th>
+                            <th class="text-left py-2">Status</th>
+                            <th class="text-left py-2">Progress</th>
+                            <th class="text-left py-2">Time</th>
+                            <th class="text-left py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityTable">
+                        <!-- Filled by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- System Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-lg font-bold mb-4">System Controls</h3>
+                <div class="space-y-3">
+                    <button id="pauseBtn" class="w-full px-4 py-2 bg-yellow-700 rounded hover:bg-yellow-600 transition">
+                        <i class="fas fa-pause mr-2"></i>Pause Processing
+                    </button>
+                    <button id="resumeBtn" class="w-full px-4 py-2 bg-green-700 rounded hover:bg-green-600 transition">
+                        <i class="fas fa-play mr-2"></i>Resume Processing
+                    </button>
+                    <button id="clearQueueBtn" class="w-full px-4 py-2 bg-red-700 rounded hover:bg-red-600 transition">
+                        <i class="fas fa-trash mr-2"></i>Clear Queue
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-lg font-bold mb-4">System Stats</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">CPU Usage</span>
+                        <span id="cpuUsage">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div id="cpuBar" class="h-2 rounded-full gradient-bg" style="width: 0%"></div>
+                    </div>
+                    
+                    <div class="flex justify-between mt-4">
+                        <span class="text-gray-400">Memory Usage</span>
+                        <span id="memoryUsage">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div id="memoryBar" class="h-2 rounded-full gradient-bg" style="width: 0%"></div>
+                    </div>
+                    
+                    <div class="flex justify-between mt-4">
+                        <span class="text-gray-400">Disk Usage</span>
+                        <span id="diskUsage">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div id="diskBar" class="h-2 rounded-full gradient-bg" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-lg font-bold mb-4">Quick Stats</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Total Processed</span>
+                        <span id="totalProcessed">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Failed Tasks</span>
+                        <span id="failedTasks" class="text-red-400">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Avg. Time</span>
+                        <span id="avgTime">0s</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Active Sessions</span>
+                        <span id="activeSessions">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize charts
+        const timeCtx = document.getElementById('timeChart').getContext('2d');
+        const timeChart = new Chart(timeCtx, {
+            type: 'bar',
+            data: {
+                labels: ['0-30s', '30-60s', '1-2m', '2-5m', '5m+'],
+                datasets: [{
+                    label: 'Processing Time Distribution',
+                    data: [12, 19, 3, 5, 2],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(139, 92, 246, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Login Bypass', 'IAP Cracking', 'Game Mods', 'Premium Unlock', 'Other'],
+                datasets: [{
+                    data: [25, 30, 15, 20, 10],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(239, 68, 68, 0.8)',
+                        'rgba(139, 92, 246, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        // Update stats function
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/admin/stats');
+                const stats = await response.json();
+                
+                document.getElementById('totalRequests').textContent = stats.total_cracks || 0;
+                
+                const successRate = stats.success_rate || '0';
+                document.getElementById('successRate').textContent = `${successRate}%`;
+                
+                document.getElementById('activeWorkers').textContent = stats.active_workers || 0;
+                document.getElementById('queueLength').textContent = Object.keys(stats.statuses || {}).length;
+                
+                updateActivityTable();
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+
+        // Update system resources
+        function updateSystemResources() {
+            // Simulate system resource data
+            const cpu = Math.floor(Math.random() * 100);
+            const memory = Math.floor(Math.random() * 100);
+            const disk = Math.floor(Math.random() * 100);
+            
+            document.getElementById('cpuUsage').textContent = `${cpu}%`;
+            document.getElementById('memoryUsage').textContent = `${memory}%`;
+            document.getElementById('diskUsage').textContent = `${disk}%`;
+            
+            document.getElementById('cpuBar').style.width = `${cpu}%`;
+            document.getElementById('memoryBar').style.width = `${memory}%`;
+            document.getElementById('diskBar').style.width = `${disk}%`;
+        }
+
+        // Update activity table
+        function updateActivityTable() {
+            const tableBody = document.getElementById('activityTable');
+            tableBody.innerHTML = '';
+            
+            // Simulate recent activity (in real app this would come from API)
+            const activities = [
+                { id: 'abc123', filename: 'app1.apk', type: 'Premium Unlock', status: 'completed', progress: 100, time: '2 min ago' },
+                { id: 'def456', filename: 'game.apk', type: 'Game Mods', status: 'processing', progress: 75, time: '1 min ago' },
+                { id: 'ghi789', filename: 'social.apk', type: 'Login Bypass', status: 'completed', progress: 100, time: '5 min ago' },
+                { id: 'jkl012', filename: 'tool.apk', type: 'IAP Cracking', status: 'failed', progress: 30, time: '10 min ago' },
+                { id: 'mno345', filename: 'media.apk', type: 'Premium Unlock', status: 'pending', progress: 0, time: 'Just now' }
+            ];
+            
+            activities.forEach(activity => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-700';
+                
+                // Determine status class
+                let statusClass = 'status-pending';
+                if (activity.status === 'completed') statusClass = 'status-success';
+                if (activity.status === 'processing') statusClass = 'status-processing';
+                if (activity.status === 'failed') statusClass = 'status-failed';
+                
+                row.innerHTML = `
+                    <td class="py-3">${activity.id}</td>
+                    <td class="py-3">${activity.filename}</td>
+                    <td class="py-3">${activity.type}</td>
+                    <td class="py-3">
+                        <span class="status-indicator ${statusClass}"></span>
+                        ${activity.status}
+                    </td>
+                    <td class="py-3">
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="h-2 rounded-full gradient-bg" style="width: ${activity.progress}%"></div>
+                        </div>
+                        ${activity.progress}%
+                    </td>
+                    <td class="py-3">${activity.time}</td>
+                    <td class="py-3">
+                        <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
+                        <button class="text-red-400 hover:text-red-300 ml-2"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Button event listeners
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            updateStats();
+            updateSystemResources();
+        });
+
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+            alert('Processing paused');
+        });
+
+        document.getElementById('resumeBtn').addEventListener('click', () => {
+            alert('Processing resumed');
+        });
+
+        document.getElementById('clearQueueBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear the queue?')) {
+                alert('Queue cleared');
+            }
+        });
+
+        // Initialize
+        updateStats();
+        updateSystemResources();
+        
+        // Update stats every 5 seconds
+        setInterval(updateStats, 5000);
+        setInterval(updateSystemResources, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # Redis for caching and queue management
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - cyber_crack_net
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cybercrack
+      POSTGRES_USER: cracker
+      POSTGRES_PASSWORD: securepassword123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cyber_crack_net
+
+  # Python Bridge Service - AI Integration
+  python-bridge:
+    build:
+      context: ./core/python-bridge
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - POSTGRES_URL=postgresql://cracker:securepassword123@postgres:5432/cybercrack
+      - PYTHONPATH=/app
+      - AI_ENHANCED=true
+      - WORMGPT_API_KEY=your_wormgpt_api_key
+      - DEEPSEEK_API_KEY=your_deepseek_api_key
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./logs:/app/logs
+    stdin_open: true
+    tty: true
+
+  # Telegram Bot Interface
+  telegram-bot:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.telegram
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - TELEGRAM_BOT_TOKEN=8548539065:AAHLcyMQKHimwo1cLTuUKZl8OR1xngL_GeI
+      - PYTHON_BRIDGE_URL=http://python-bridge:8084
+      - REDIS_URL=redis://redis:6379
+      - MAX_UPLOAD_SIZE=500
+      - WORK_DIR=/app
+      - WORMGPT_API_KEY=your_wormgpt_api_key
+      - DEEPSEEK_API_KEY=your_deepseek_api_key
+    depends_on:
+      - python-bridge
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./logs:/app/logs
+    stdin_open: true
+    tty: true
+
+networks:
+  cyber_crack_net:
+    driver: bridge
+
+volumes:
+  redis_data:
+  postgres_data:

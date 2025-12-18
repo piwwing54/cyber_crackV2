@@ -1,0 +1,138 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - cyber_crack_net
+
+  go-analyzer:
+    build:
+      context: .
+      dockerfile: core/go-analyzer/Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  rust-cracker:
+    build:
+      context: .
+      dockerfile: core/rust-cracker/Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  cpp-breaker:
+    build:
+      context: .
+      dockerfile: core/cpp-breaker/Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  java-dex:
+    build:
+      context: .
+      dockerfile: core/java-dex/Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  python-bridge:
+    build:
+      context: .
+      dockerfile: core/python-bridge/Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+
+  orchestrator:
+    build:
+      context: .
+      dockerfile: brain/Dockerfile.orchestrator
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - POSTGRES_URL=postgresql://cracker:securepassword123@postgres:5432/cybercrack
+      - GO_ANALYZER_URL=http://go-analyzer:8080
+      - RUST_CRACKER_URL=http://rust-cracker:8081
+      - CPP_BREAKER_URL=http://cpp-breaker:8082
+      - JAVA_DEX_URL=http://java-dex:8083
+      - PYTHON_BRIDGE_URL=http://python-bridge:8084
+    depends_on:
+      - redis
+      - postgres
+      - go-analyzer
+      - rust-cracker
+      - cpp-breaker
+      - java-dex
+      - python-bridge
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=cybercrack
+      - POSTGRES_USER=cracker
+      - POSTGRES_PASSWORD=securepassword123
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - cyber_crack_net
+
+  # MAIN TELEGRAM BOT SERVICE
+  telegram-bot:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.telegram
+    environment:
+      - TELEGRAM_BOT_TOKEN=8548539065:AAHLcyMQKHimwo1cLTuUKZl8OR1xngL_GeI
+      - ORCHESTRATOR_URL=http://orchestrator:5000
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - orchestrator
+      - redis
+    networks:
+      - cyber_crack_net
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+
+networks:
+  cyber_crack_net:
+    driver: bridge
+
+volumes:
+  redis_data:
+  postgres_data:

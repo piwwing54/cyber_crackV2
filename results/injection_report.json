@@ -1,0 +1,32 @@
+{
+  "original_apk": "test_app_with_injection.apk",
+  "modified_apk": "modified_test_app_with_injection.apk",
+  "injections_applied": 10,
+  "injection_types": [
+    "Login Bypass",
+    "IAP Cracking",
+    "Premium Unlock",
+    "Root Detection Bypass",
+    "Certificate Pinning Bypass",
+    "License Cracking",
+    "Security Bypass",
+    "Ad Removal",
+    "Trial Bypass",
+    "Subscription Bypass"
+  ],
+  "bypass_methods_modified": 131,
+  "security_checks_bypassed": 47,
+  "features_unlocked": 68,
+  "stability_score": 95,
+  "success_rate": 100,
+  "verification_passed": true,
+  "timestamp": "2025-12-17T19:52:19.768050",
+  "injection_details": {
+    "injections_applied": 10,
+    "smali_modified": false,
+    "mod_menu_injected": true,
+    "security_modified": true,
+    "apk_generated": "results/modified_test_app_with_injection.apk",
+    "files_modified": 9
+  }
+}

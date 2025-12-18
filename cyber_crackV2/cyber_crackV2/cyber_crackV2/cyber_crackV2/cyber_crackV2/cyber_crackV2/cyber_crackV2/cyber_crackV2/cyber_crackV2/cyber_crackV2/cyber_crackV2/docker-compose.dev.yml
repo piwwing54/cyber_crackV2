@@ -1,0 +1,200 @@
+version: '3.8'
+
+services:
+  # Redis for caching and queue management
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - cyber-crack-net
+    restart: unless-stopped
+
+  # Go Analyzer Service - Ultra Fast Analysis
+  go-analyzer:
+    build:
+      context: ./core/go-analyzer
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=info
+      - MAX_WORKERS=10
+    depends_on:
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./core/go-analyzer:/app
+    networks:
+      - cyber-crack-net
+    restart: unless-stopped
+
+  # Rust Cracker Service - Binary Manipulation
+  rust-cracker:
+    build:
+      context: ./core/rust-cracker
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - WORKER_THREADS=8
+    depends_on:
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./core/rust-cracker:/app  
+    networks:
+      - cyber-crack-net
+    restart: unless-stopped
+
+  # C++ Breaker Service - GPU Acceleration
+  cpp-breaker:
+    build:
+      context: ./core/cpp-breaker
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - ENABLE_GPU_ACCELERATION=false
+    depends_on:
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./core/cpp-breaker:/app
+    networks:
+      - cyber-crack-net
+    restart: unless-stopped
+
+  # Java DEX Service - Android Specific
+  java-dex:
+    build:
+      context: ./core/java-dex
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - JAVA_OPTS=-Xmx2g -Xms1g
+    depends_on:
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./core/java-dex:/app
+    networks:
+      - cyber-crack-net
+    restart: unless-stopped
+
+  # Python Bridge Service - AI Integration
+  python-bridge:
+    build:
+      context: ./core/python-bridge
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PYTHONPATH=/app
+      - AI_ENHANCED=true
+      - WORMGPT_API_KEY=${WORMGPT_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+    depends_on:
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./core/python-bridge:/app
+    networks:
+      - cyber-crack-net
+    restart: unless-stopped
+
+  # Main Orchestrator
+  orchestrator:
+    build:
+      context: ./brain
+      dockerfile: Dockerfile.orchestrator
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - POSTGRES_URL=postgresql://cracker:securepassword123@postgres:5432/cybercrack
+      - GO_ANALYZER_URL=http://go-analyzer:8080
+      - RUST_CRACKER_URL=http://rust-cracker:8081
+      - CPP_BREAKER_URL=http://cpp-breaker:8082
+      - JAVA_DEX_URL=http://java-dex:8083
+      - PYTHON_BRIDGE_URL=http://python-bridge:8084
+      - MAX_CONCURRENT_JOBS=20
+      - WORMGPT_API_KEY=${WORMGPT_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+    depends_on:
+      - redis
+      - postgres
+      - go-analyzer
+      - rust-cracker
+      - cpp-breaker
+      - java-dex
+      - python-bridge
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./brain:/app
+    networks:
+      - cyber-crack-net
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cybercrack
+      POSTGRES_USER: cracker
+      POSTGRES_PASSWORD: securepassword123
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - cyber-crack-net
+    restart: unless-stopped
+
+  # Telegram Bot Interface
+  telegram-bot:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.bot
+    environment:
+      - TELEGRAM_BOT_TOKEN=8548539065:AAHLcyMQKHimwo1cLTuUKZl8OR1xngL_GeI
+      - ORCHESTRATOR_URL=http://orchestrator:5000
+      - REDIS_URL=redis://redis:6379
+      - MAX_UPLOAD_SIZE=500
+      - WORMGPT_API_KEY=${WORMGPT_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+    depends_on:
+      - orchestrator
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./frontend:/app
+    networks:
+      - cyber-crack-net
+    restart: unless-stopped
+
+
+networks:
+  cyber-crack-net:
+    driver: bridge
+
+volumes:
+  redis_data:
+  postgres_data:

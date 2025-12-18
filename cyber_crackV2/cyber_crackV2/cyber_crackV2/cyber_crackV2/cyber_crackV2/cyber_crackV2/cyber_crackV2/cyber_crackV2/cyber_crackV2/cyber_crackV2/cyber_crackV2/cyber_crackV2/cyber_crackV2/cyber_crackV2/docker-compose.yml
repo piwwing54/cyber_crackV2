@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: cyber-crack-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Orchestrator service
+  orchestrator:
+    image: python:3.10-slim
+    container_name: cyber-crack-orchestrator
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - ORCHESTRATOR_URL=http://orchestrator:5000
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+      - /tmp/uploads:/app/uploads
+    working_dir: /app
+    command: >
+      bash -c "
+        pip install redis aiohttp requests fastapi uvicorn pydantic typing-extensions &&
+        pip install python-multipart jinja2 &&
+        mkdir -p uploads &&
+        chmod 777 uploads &&
+        python orchestrator/orchestrator.py
+      "
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget --quiet --tries=1 --spider http://localhost:5000/health && grep -q 'healthy' <(wget -qO- http://localhost:5000/health)"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 180s
+
+  # Web Dashboard
+  web-dashboard:
+    image: python:3.10-slim
+    container_name: cyber-crack-web-dashboard
+    depends_on:
+      - orchestrator
+    ports:
+      - "8000:8000"
+    environment:
+      - ORCHESTRATOR_URL=http://orchestrator:5000
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - .:/app
+      - /tmp/uploads:/app/uploads
+    working_dir: /app
+    command: >
+      bash -c "
+        pip install fastapi uvicorn jinja2 python-multipart requests &&
+        mkdir -p uploads &&
+        chmod 777 uploads &&
+        python frontend/web_dashboard.py
+      "
+
+  # Telegram Bot
+  telegram-bot:
+    image: python:3.10-slim
+    container_name: cyber-crack-telegram-bot
+    depends_on:
+      - orchestrator
+      - redis
+    volumes:
+      - .:/app
+      - /tmp/uploads:/app/uploads
+    working_dir: /app
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-8548539065:AAHLcyMQKHimwo1cLTuUKZl8OR1xngL_GeI}
+      - ORCHESTRATOR_URL=http://orchestrator:5000
+      - REDIS_URL=redis://redis:6379
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-sk-xxx-deepseek-ai-crack-key-123456789}
+      - WORMGPT_API_KEY=${WORMGPT_API_KEY:-sk-xxx-wormgpt-ai-crack-key-987654321}
+    command: >
+      bash -c "
+        pip install aiogram==2.25.1 python-dotenv redis aiohttp requests &&
+        mkdir -p uploads &&
+        chmod 777 uploads &&
+        python compatible_bot_docker.py
+      "
+
+volumes:
+  redis_data:

@@ -1,0 +1,15 @@
+{
+  "pattern": [
+    "hasUnlimitedCoins",
+    "isGodMode",
+    "hasInfiniteHealth"
+  ],
+  "injection_code": "const v0, 0x7fffffff\nreturn v0",
+  "target_files": [
+    "Game.smali",
+    "Modification.smali",
+    "Cheats.smali",
+    "Hacks.smali"
+  ],
+  "priority": 92
+}

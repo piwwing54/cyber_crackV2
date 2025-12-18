@@ -1,0 +1,298 @@
+{
+  "crack_patterns": {
+    "login_bypass": [
+      {
+        "name": "AUTO_LOGIN_BYPASS",
+        "pattern": "const\\/4 v0, 0x0",
+        "replacement": "const\\/4 v0, 0x1",
+        "description": "Force authentication to always succeed",
+        "severity": "CRITICAL",
+        "category": "authentication",
+        "applicable_to": ["login", "auth", "authenticate"],
+        "patch_template": "login_bypass",
+        "risk_level": "LOW",
+        "stability_score": 95,
+        "priority": 1
+      },
+      {
+        "name": "SKIP_LOGIN_CHECK",
+        "pattern": "invoke-virtual.*Login",
+        "replacement": "return-void",
+        "description": "Skip login verification methods",
+        "severity": "CRITICAL",
+        "category": "authentication",
+        "applicable_to": ["login", "verification", "checker"],
+        "patch_template": "skip_method",
+        "risk_level": "MEDIUM",
+        "stability_score": 85,
+        "priority": 2
+      }
+    ],
+    "iap_bypass": [
+      {
+        "name": "PURCHASE_VERIFICATION_BYPASS",
+        "pattern": "verifyPurchase.*Z",
+        "replacement": "const\\/4 v0, 0x1\\nreturn v0",
+        "description": "Bypass in-app purchase verification",
+        "severity": "CRITICAL",
+        "category": "billing",
+        "applicable_to": ["billing", "purchase", "verify"],
+        "patch_template": "iap_bypass",
+        "risk_level": "MEDIUM",
+        "stability_score": 80,
+        "priority": 1
+      }
+    ],
+    "certificate_pinning": [
+      {
+        "name": "CERTIFICATE_PINNER_BYPASS",
+        "pattern": "checkServerTrusted",
+        "replacement": "return-void",
+        "description": "Bypass certificate pinning",
+        "severity": "MEDIUM",
+        "category": "security",
+        "applicable_to": ["ssl", "tls", "certificate", "pinning"],
+        "patch_template": "cert_bypass",
+        "risk_level": "HIGH",
+        "stability_score": 70,
+        "priority": 2
+      }
+    ],
+    "root_detection": [
+      {
+        "name": "ROOT_TOOLS_BYPASS",
+        "pattern": "RootTools.isRooted",
+        "replacement": "const\\/4 v0, 0x0\\nreturn v0",
+        "description": "Bypass RootTools root detection",
+        "severity": "MEDIUM",
+        "category": "security",
+        "applicable_to": ["root", "detection", "security"],
+        "patch_template": "root_bypass",
+        "risk_level": "MEDIUM",
+        "stability_score": 85,
+        "priority": 1
+      }
+    ],
+    "anti_debug": [
+      {
+        "name": "DEBUGGER_CONNECTION_BYPASS",
+        "pattern": "isDebuggerConnected",
+        "replacement": "const\\/4 v0, 0x0\\nreturn v0",
+        "description": "Bypass debugger connection check",
+        "severity": "MEDIUM",
+        "category": "security",
+        "applicable_to": ["debug", "debugger", "connection"],
+        "patch_template": "anti_debug_bypass",
+        "risk_level": "HIGH",
+        "stability_score": 75,
+        "priority": 2
+      }
+    ],
+    "game_mods": [
+      {
+        "name": "UNLIMITED_COINS",
+        "pattern": "subtractCoin",
+        "replacement": "nop",
+        "description": "Prevent coin subtraction",
+        "severity": "LOW",
+        "category": "game",
+        "applicable_to": ["game", "coins", "currency"],
+        "patch_template": "game_mod",
+        "risk_level": "LOW",
+        "stability_score": 95,
+        "priority": 1
+      },
+      {
+        "name": "GOD_MODE_BYPASS",
+        "pattern": "takeDamage",
+        "replacement": "const\\/4 v0, 0x0\\nreturn v0",
+        "description": "Prevent damage taking",
+        "severity": "LOW",
+        "category": "game",
+        "applicable_to": ["game", "damage", "health"],
+        "patch_template": "god_mode",
+        "risk_level": "MEDIUM",
+        "stability_score": 80,
+        "priority": 3
+      }
+    ],
+    "premium_unlock": [
+      {
+        "name": "PREMIUM_CHECK_BYPASS",
+        "pattern": "isPremium",
+        "replacement": "const\\/4 v0, 0x1\\nreturn v0",
+        "description": "Unlock premium features",
+        "severity": "MEDIUM",
+        "category": "features",
+        "applicable_to": ["premium", "features", "unlock"],
+        "patch_template": "premium_unlock",
+        "risk_level": "MEDIUM",
+        "stability_score": 85,
+        "priority": 1
+      }
+    ]
+  },
+  "vulnerabilities": {
+    "insecure_storage": {
+      "severity": "HIGH",
+      "description": "Application stores sensitive data insecurely",
+      "cwe": "CWE-522",
+      "owasp": "M2: Insecure Data Storage",
+      "patterns": ["SharedPreferences", "getPreferences", "openFileOutput"],
+      "solutions": ["Use encrypted shared preferences", "Store sensitive data in hardware-backed keystore"]
+    },
+    "hardcoded_credentials": {
+      "severity": "CRITICAL",
+      "description": "Application has hardcoded credentials",
+      "cwe": "CWE-798",
+      "owasp": "M1: Improper Platform Usage",
+      "patterns": ["password.*=", "api_key.*=", "secret.*="],
+      "solutions": ["Remove hardcoded credentials", "Use secure credential storage"]
+    },
+    "insecure_network": {
+      "severity": "HIGH",
+      "description": "Application uses insecure network communication",
+      "cwe": "CWE-319",
+      "owasp": "M3: Insecure Communication",
+      "patterns": ["http://", "SSLSocketFactory", "TrustAll"],
+      "solutions": ["Enforce HTTPS communication", "Implement proper certificate pinning"]
+    },
+    "weak_crypto": {
+      "severity": "HIGH",
+      "description": "Application uses weak cryptographic algorithms",
+      "cwe": "CWE-327",
+      "owasp": "M5: Insufficient Cryptography",
+      "patterns": ["MD5", "DES", "RC4", "Base64.encode"],
+      "solutions": ["Use strong cryptography (AES-256)", "Update deprecated algorithms"]
+    }
+  },
+  "solutions": {
+    "login_bypass": [
+      "Modify authenticate methods to always return success",
+      "Patch session validation routines",
+      "Bypass token verification"
+    ],
+    "iap_bypass": [
+      "Intercept purchase validation calls",
+      "Modify billing response handlers",
+      "Bypass receipt verification"
+    ],
+    "certificate_pinning_bypass": [
+      "Replace certificate validation methods",
+      "Implement custom SSL context",
+      "Hook network security config"
+    ],
+    "root_detection_bypass": [
+      "Modify file system checks",
+      "Bypass root management app detection",
+      "Hook root detection libraries"
+    ],
+    "anti_debug_bypass": [
+      "Hook debugging detection methods",
+      "Bypass debugger attachment checks",
+      "Modify JDWP detection"
+    ]
+  },
+  "solutions": {
+    "login_bypass": [
+      "Modify authenticate methods to always return success",
+      "Patch session validation routines", 
+      "Bypass token verification"
+    ],
+    "iap_bypass": [
+      "Intercept purchase validation calls",
+      "Modify billing response handlers",
+      "Bypass receipt verification"  
+    ],
+    "certificate_pinning_bypass": [
+      "Replace certificate validation methods",
+      "Implement custom SSL context",
+      "Hook network security config"
+    ],
+    "root_detection_bypass": [
+      "Modify file system checks", 
+      "Bypass root management app detection",
+      "Hook root detection libraries"
+    ],
+    "anti_debug_bypass": [
+      "Hook debugging detection methods",
+      "Bypass debugger attachment checks", 
+      "Modify JDWP detection"
+    ]
+  },
+  "crack_patterns": [
+    "login_bypass",
+    "iap_crack", 
+    "certificate_pinning_bypass",
+    "root_detection_bypass",
+    "debug_bypass",
+    "license_check_bypass",
+    "file_integrity_check_bypass",
+    "tamper_detection_bypass",
+    "premium_feature_unlock",
+    "game_modification"
+  ],
+  "dex_modifications": {
+    "method_replacement": {
+      "description": "Replace method implementation",
+      "template": "// Method replacement template",
+      "examples": [
+        "const/4 v0, 0x1\\nreturn v0",
+        "return-void", 
+        "nop"
+      ]
+    },
+    "method_patching": {
+      "description": "Patch method to change behavior",
+      "template": "// Patch template",
+      "examples": [
+        "if-eqz v0, :after_check",
+        "const/4 v0, 0x1"
+      ]
+    }
+  },
+  "smali_patterns": {
+    "condition_bypass": {
+      "description": "Bypass conditional checks",
+      "pattern": "if-(eq|ne|lt|gt|le|ge)z?",
+      "replacement": "const/4 v0, 0x1"
+    },
+    "boolean_return": {
+      "description": "Force boolean return to true", 
+      "pattern": "return.*",
+      "replacement": "const/4 v0, 0x1\\nreturn v0"
+    },
+    "integer_return": {
+      "description": "Force integer return to specific value",
+      "pattern": "return.*", 
+      "replacement": "const/4 v0, 0x1\\nreturn v0"
+    },
+    "method_call_bypass": {
+      "description": "Bypass method calls",
+      "pattern": "invoke-.*",
+      "replacement": "nop"
+    }
+  },
+  "crack_templates": {
+    "login_bypass_template": {
+      "name": "Universal Login Bypass",
+      "description": "Template for bypassing various login systems",
+      "steps": [
+        "Locate authenticate method",
+        "Patch to return success",
+        "Bypass dependent checks"
+      ],
+      "target_pattern": "authenticate|login|checkAuthorization"
+    },
+    "iap_bypass_template": {
+      "name": "In-App Purchase Universal Bypass", 
+      "description": "Template for bypassing IAP systems",
+      "steps": [
+        "Find billing client",
+        "Intercept purchase validation", 
+        "Return successful transaction"
+      ],
+      "target_pattern": "billingClient|verifyPurchase|consumePurchase"
+    }
+  }
+}

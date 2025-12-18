@@ -1,0 +1,16 @@
+{
+  "pattern": [
+    "isAuthenticated",
+    "isLoggedIn",
+    "isAuthorized",
+    "checkAuth",
+    "validateAuth"
+  ],
+  "injection_code": "const/4 v0, 0x1\nreturn v0",
+  "target_files": [
+    "Authentication.smali",
+    "Login.smali",
+    "Auth.smali"
+  ],
+  "priority": 95
+}

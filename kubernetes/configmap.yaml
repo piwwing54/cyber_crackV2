@@ -1,0 +1,202 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cyber-crack-config
+  namespace: cyber-crack-pro
+data:
+  # Application configuration
+  APP_ENV: "production"
+  LOG_LEVEL: "info"
+  DEBUG_MODE: "false"
+  
+  # Database configuration
+  POSTGRES_DB: "cybercrackpro"
+  POSTGRES_USER: "cracker"
+  POSTGRES_PORT: "5432"
+  
+  # Redis configuration
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  REDIS_MAX_CONNECTIONS: "20"
+  REDIS_MIN_CONNECTIONS: "5"
+  
+  # API configuration
+  API_TIMEOUT: "300"
+  API_MAX_REQUEST_SIZE: "524288000"  # 500MB in bytes
+  
+  # Processing configuration
+  MAX_CONCURRENT_JOBS: "20"
+  JOB_TIMEOUT: "3600"
+  MAX_RETRY_ATTEMPTS: "3"
+  UPLOAD_LIMIT_MB: "500"
+  
+  # Security configuration
+  RATE_LIMIT_REQUESTS: "100"
+  RATE_LIMIT_WINDOW: "3600"
+  AUTH_TOKEN_EXPIRY: "36000"
+  
+  # AI Configuration
+  DEEPSEEK_MODEL: "deepseek-chat"
+  WORMGPT_MODEL: "wormgpt-v2"
+  AI_TEMPERATURE: "0.3"
+  AI_MAX_TOKENS: "2048"
+  
+  # Performance
+  GOMAXPROCS: "4"
+  RUST_THREADS: "8"
+  JAVA_OPTS: "-Xmx4g -Xms2g"
+  PYTHON_THREADS: "10"
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crack-patterns
+  namespace: cyber-crack-pro
+data:
+  # Common crack patterns
+  login_bypass_patterns: |
+    [
+      "authenticate",
+      "login", 
+      "signin",
+      "password",
+      "credential",
+      "verifyUser",
+      "checkLogin",
+      "isAuthenticated"
+    ]
+  iap_bypass_patterns: |
+    [
+      "purchase",
+      "billing",
+      "subscribe", 
+      "inapp",
+      "IAB",
+      "verifyPurchase",
+      "checkPurchase",
+      "billingClient"
+    ]
+  premium_unlock_patterns: |
+    [
+      "isPremium",
+      "isPro", 
+      "isVip",
+      "isSubscribed",
+      "checkLicense",
+      "hasAccess",
+      "isFeatureEnabled"
+    ]
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ai-api-keys
+  namespace: cyber-crack-pro
+type: Opaque
+data:
+  deepseek-api-key: <base64_encoded_deepseek_key_here>
+  wormgpt-api-key: <base64_encoded_wormgpt_key_here>
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bot-tokens
+  namespace: cyber-crack-pro
+type: Opaque
+data:
+  bot-token: <base64_encoded_telegram_bot_token_here>
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-credentials
+  namespace: cyber-crack-pro
+type: Opaque
+data:
+  password: <base64_encoded_postgres_password_here>
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: redis-credentials
+  namespace: cyber-crack-pro
+type: Opaque
+data:
+  password: <base64_encoded_redis_password_here>
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uploads-pvc
+  namespace: cyber-crack-pro
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: fast-ssd
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: results-pvc
+  namespace: cyber-crack-pro
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: fast-ssd
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: patterns-pvc
+  namespace: cyber-crack-pro
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: ssd
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: models-pvc
+  namespace: cyber-crack-pro
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: fast-ssd
+
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cyber-crack-pro

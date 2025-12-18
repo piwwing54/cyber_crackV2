@@ -1,0 +1,35 @@
+{
+  "request_id": "77c90df147dacdc0",
+  "apk_path": "storage/uploads/77c90df147dacdc0_Pixels.ver.3.10.build.147.apks",
+  "status": "success",
+  "output_dir": "./storage/processed",
+  "config": {
+    "bypass_login": true,
+    "unlock_iap": true,
+    "game_mods": false,
+    "premium_unlock": true,
+    "security_bypass": true,
+    "license_crack": false,
+    "system_modifications": false,
+    "network_bypass": false,
+    "performance_boost": false,
+    "ai_enhanced_crack": true
+  },
+  "applied_modifications": [
+    "Login bypass applied",
+    "IAP unlock applied",
+    "Premium unlock applied",
+    "Security bypasses applied"
+  ],
+  "bypasses_applied": [
+    "login_bypass",
+    "iap_unlock",
+    "premium_unlock",
+    "security_bypass"
+  ],
+  "success_metrics": {
+    "processing_time": "2.5s",
+    "stability_score": 92,
+    "features_unlocked": 5
+  }
+}

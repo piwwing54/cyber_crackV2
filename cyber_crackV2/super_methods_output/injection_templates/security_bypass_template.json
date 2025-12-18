@@ -1,0 +1,16 @@
+{
+  "pattern": [
+    "isRooted",
+    "isJailbroken",
+    "isDeviceSecure",
+    "checkIntegrity"
+  ],
+  "injection_code": "const/4 v0, 0x0\nreturn v0",
+  "target_files": [
+    "Security.smali",
+    "RootCheck.smali",
+    "Integrity.smali",
+    "Validation.smali"
+  ],
+  "priority": 90
+}
